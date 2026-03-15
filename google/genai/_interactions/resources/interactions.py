@@ -17,11 +17,12 @@
 
 from __future__ import annotations
 
-from typing import List, Union, Iterable
+from typing import List, Union, Iterable, Callable
 from typing_extensions import Literal, overload
 
 import httpx
 
+from ...types import FunctionCall, GuardDecision
 from ..types import interaction_get_params, interaction_create_params
 from .._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from .._utils import required_args, maybe_transform, async_maybe_transform
@@ -81,6 +82,7 @@ class InteractionsResource(SyncAPIResource):
         stream: Literal[False] | Omit = omit,
         system_instruction: str | Omit = omit,
         tools: Iterable[ToolParam] | Omit = omit,
+        action_guard: Callable[[FunctionCall], GuardDecision] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -144,6 +146,7 @@ class InteractionsResource(SyncAPIResource):
         store: bool | Omit = omit,
         system_instruction: str | Omit = omit,
         tools: Iterable[ToolParam] | Omit = omit,
+        action_guard: Callable[[FunctionCall], GuardDecision] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -207,6 +210,7 @@ class InteractionsResource(SyncAPIResource):
         stream: Literal[False] | Omit = omit,
         system_instruction: str | Omit = omit,
         tools: Iterable[ToolParam] | Omit = omit,
+        action_guard: Callable[[FunctionCall], GuardDecision] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -270,6 +274,7 @@ class InteractionsResource(SyncAPIResource):
         store: bool | Omit = omit,
         system_instruction: str | Omit = omit,
         tools: Iterable[ToolParam] | Omit = omit,
+        action_guard: Callable[[FunctionCall], GuardDecision] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -333,6 +338,7 @@ class InteractionsResource(SyncAPIResource):
         store: bool | Omit = omit,
         system_instruction: str | Omit = omit,
         tools: Iterable[ToolParam] | Omit = omit,
+        action_guard: Callable[[FunctionCall], GuardDecision] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -396,6 +402,7 @@ class InteractionsResource(SyncAPIResource):
         stream: Literal[False] | Literal[True] | Omit = omit,
         system_instruction: str | Omit = omit,
         tools: Iterable[ToolParam] | Omit = omit,
+        action_guard: Callable[[FunctionCall], GuardDecision] | Omit = omit,
         agent: Union[str, Literal["deep-research-pro-preview-12-2025"]] | Omit = omit,
         agent_config: interaction_create_params.AgentConfig | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -429,6 +436,7 @@ class InteractionsResource(SyncAPIResource):
                     "stream": stream,
                     "system_instruction": system_instruction,
                     "tools": tools,
+                    "action_guard": action_guard,
                     "agent": agent,
                     "agent_config": agent_config,
                 },
@@ -709,6 +717,7 @@ class AsyncInteractionsResource(AsyncAPIResource):
         stream: Literal[False] | Omit = omit,
         system_instruction: str | Omit = omit,
         tools: Iterable[ToolParam] | Omit = omit,
+        action_guard: Callable[[FunctionCall], GuardDecision] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -772,6 +781,7 @@ class AsyncInteractionsResource(AsyncAPIResource):
         store: bool | Omit = omit,
         system_instruction: str | Omit = omit,
         tools: Iterable[ToolParam] | Omit = omit,
+        action_guard: Callable[[FunctionCall], GuardDecision] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -835,6 +845,7 @@ class AsyncInteractionsResource(AsyncAPIResource):
         stream: Literal[False] | Omit = omit,
         system_instruction: str | Omit = omit,
         tools: Iterable[ToolParam] | Omit = omit,
+        action_guard: Callable[[FunctionCall], GuardDecision] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -898,6 +909,7 @@ class AsyncInteractionsResource(AsyncAPIResource):
         store: bool | Omit = omit,
         system_instruction: str | Omit = omit,
         tools: Iterable[ToolParam] | Omit = omit,
+        action_guard: Callable[[FunctionCall], GuardDecision] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -961,6 +973,7 @@ class AsyncInteractionsResource(AsyncAPIResource):
         store: bool | Omit = omit,
         system_instruction: str | Omit = omit,
         tools: Iterable[ToolParam] | Omit = omit,
+        action_guard: Callable[[FunctionCall], GuardDecision] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1024,6 +1037,7 @@ class AsyncInteractionsResource(AsyncAPIResource):
         stream: Literal[False] | Literal[True] | Omit = omit,
         system_instruction: str | Omit = omit,
         tools: Iterable[ToolParam] | Omit = omit,
+        action_guard: Callable[[FunctionCall], GuardDecision] | Omit = omit,
         agent: Union[str, Literal["deep-research-pro-preview-12-2025"]] | Omit = omit,
         agent_config: interaction_create_params.AgentConfig | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -1057,6 +1071,7 @@ class AsyncInteractionsResource(AsyncAPIResource):
                     "stream": stream,
                     "system_instruction": system_instruction,
                     "tools": tools,
+                    "action_guard": action_guard,
                     "agent": agent,
                     "agent_config": agent_config,
                 },

@@ -16,10 +16,10 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from __future__ import annotations
-
-from typing import List, Union, Iterable
+from typing import List, Union, Iterable, Callable
 from typing_extensions import Literal, Required, TypeAlias, TypedDict
 
+from ...types import FunctionCall, GuardDecision
 from .tool_param import ToolParam
 from .turn_param import TurnParam
 from .model_param import ModelParam
@@ -99,6 +99,8 @@ class BaseCreateModelInteractionParams(TypedDict, total=False):
     tools: Iterable[ToolParam]
     """A list of tool declarations the model may call during interaction."""
 
+    action_guard: Callable[[FunctionCall], GuardDecision]
+
 
 Input: TypeAlias = Union[
     Iterable[ContentParam],
@@ -165,6 +167,8 @@ class BaseCreateAgentInteractionParams(TypedDict, total=False):
 
     tools: Iterable[ToolParam]
     """A list of tool declarations the model may call during interaction."""
+
+    action_guard: Callable[[FunctionCall], GuardDecision]
 
 
 AgentConfig: TypeAlias = Union[DynamicAgentConfigParam, DeepResearchAgentConfigParam]

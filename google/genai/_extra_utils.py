@@ -336,6 +336,7 @@ async def invoke_function_from_dict_args_async(
 def get_function_response_parts(
     response: types.GenerateContentResponse,
     function_map: dict[str, Union[Callable[..., Any], McpToGenAiToolAdapter]],
+    action_guard: Optional[Callable[[types.FunctionCall], types.GuardDecision]] = None,
 ) -> list[types.Part]:
   """Returns the function response parts from the response."""
   func_response_parts = []
@@ -354,6 +355,30 @@ def get_function_response_parts(
             part.function_call.args
         )
         func_response: _common.StringDict
+        # Consult action guard (sync methods do not support async guards)
+        if action_guard:
+          if inspect.iscoroutinefunction(action_guard):
+            raise errors.UnsupportedFunctionError(
+              'Async action_guard is not supported in synchronous methods.'
+            )
+          try:
+            decision = action_guard(
+              types.FunctionCall(name=func_name, args=args)
+            )
+          except Exception as e:
+            func_response = {'error': f'Action guard error: {e}'}
+            func_response_part = types.Part.from_function_response(
+              name=func_name, response=func_response
+            )
+            func_response_parts.append(func_response_part)
+            continue
+          if decision == types.GuardDecision.BLOCK:
+            func_response = {'error': 'Action blocked by action_guard'}
+            func_response_part = types.Part.from_function_response(
+              name=func_name, response=func_response
+            )
+            func_response_parts.append(func_response_part)
+            continue
         try:
           if not isinstance(func, McpToGenAiToolAdapter):
             func_response = {
@@ -371,6 +396,7 @@ def get_function_response_parts(
 async def get_function_response_parts_async(
     response: types.GenerateContentResponse,
     function_map: dict[str, Union[Callable[..., Any], McpToGenAiToolAdapter]],
+    action_guard: Optional[Callable[[types.FunctionCall], types.GuardDecision]] = None,
 ) -> list[types.Part]:
   """Returns the function response parts from the response."""
   func_response_parts = []
@@ -390,6 +416,28 @@ async def get_function_response_parts_async(
         )
         func_response: _common.StringDict
         try:
+          # Consult action guard (async path supports async or sync guard)
+          if action_guard:
+            try:
+              if inspect.iscoroutinefunction(action_guard):
+                decision = await action_guard(types.FunctionCall(name=func_name, args=args))
+              else:
+                decision = action_guard(types.FunctionCall(name=func_name, args=args))
+            except Exception as e:  # pylint: disable=broad-except
+              func_response = {'error': f'Action guard error: {e}'}
+              func_response_part = types.Part.from_function_response(
+                  name=func_name, response=func_response
+              )
+              func_response_parts.append(func_response_part)
+              continue
+            if decision == types.GuardDecision.BLOCK:
+              func_response = {'error': 'Action blocked by action_guard'}
+              func_response_part = types.Part.from_function_response(
+                  name=func_name, response=func_response
+              )
+              func_response_parts.append(func_response_part)
+              continue
+
           if isinstance(func, McpToGenAiToolAdapter):
             mcp_tool_response = await func.call_tool(
                 types.FunctionCall(name=func_name, args=args)

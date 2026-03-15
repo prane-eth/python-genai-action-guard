@@ -5466,6 +5466,13 @@ class ModelArmorConfigDict(TypedDict, total=False):
 ModelArmorConfigOrDict = Union[ModelArmorConfig, ModelArmorConfigDict]
 
 
+class GuardDecision(_common.CaseInSensitiveEnum):
+  """Decision returned by an action guard."""
+
+  ALLOW = 'ALLOW'
+  BLOCK = 'BLOCK'
+
+
 class GenerateContentConfig(_common.BaseModel):
   """Optional model configuration parameters.
 
@@ -5622,6 +5629,14 @@ class GenerateContentConfig(_common.BaseModel):
       description="""Code that enables the system to interact with external systems to
       perform an action outside of the knowledge and scope of the model.
       """,
+  )
+  action_guard: Optional[Callable[[FunctionCall], GuardDecision]] = Field(
+    default=None,
+    description=(
+      "Optional. A centralized callable invoked before any tool or MCP "
+      "action is executed. Receives a `FunctionCall` and returns a "
+      "`GuardDecision` (`ALLOW` or `BLOCK`)."
+    ),
   )
   tool_config: Optional[ToolConfig] = Field(
       default=None,
@@ -5848,6 +5863,9 @@ class GenerateContentConfigDict(TypedDict, total=False):
   """Code that enables the system to interact with external systems to
       perform an action outside of the knowledge and scope of the model.
       """
+
+  action_guard: Optional[Callable[[FunctionCall], GuardDecision]]
+  """Optional. A centralized callable invoked before any tool or MCP action is executed. Receives a `FunctionCall` and returns a `GuardDecision` (ALLOW or BLOCK)."""
 
   tool_config: Optional[ToolConfigDict]
   """Associates model output to a specific function call.

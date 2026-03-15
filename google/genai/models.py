@@ -5722,7 +5722,8 @@ class Models(_api_module.BaseModule):
       ):
         break
       func_response_parts = _extra_utils.get_function_response_parts(
-          response, function_map
+          response, function_map,
+          parsed_config.action_guard if parsed_config else None,
       )
       if not func_response_parts:
         break
@@ -5895,7 +5896,8 @@ class Models(_api_module.BaseModule):
             ):
               break
             func_response_parts = _extra_utils.get_function_response_parts(
-                chunk, function_map
+                chunk, function_map,
+                parsed_config.action_guard if parsed_config else None,
             )
             if not func_response_parts:
               contents = _extra_utils.append_chunk_contents(contents, chunk)  # type: ignore[assignment]
@@ -5918,7 +5920,8 @@ class Models(_api_module.BaseModule):
         ):
           break
         func_response_parts = _extra_utils.get_function_response_parts(
-            chunk, function_map
+            chunk, function_map,
+            parsed_config.action_guard if parsed_config else None,
         )
 
       if not function_map:
@@ -7594,7 +7597,8 @@ class AsyncModels(_api_module.BaseModule):
         break
       func_response_parts = (
           await _extra_utils.get_function_response_parts_async(
-              response, function_map
+              response, function_map,
+              parsed_config.action_guard if parsed_config else None,
           )
       )
       if not func_response_parts:
@@ -7782,7 +7786,8 @@ class AsyncModels(_api_module.BaseModule):
                 break
               func_response_parts = (
                   await _extra_utils.get_function_response_parts_async(
-                      chunk, function_map
+                      chunk, function_map,
+                      parsed_config.action_guard if parsed_config else None,
                   )
               )
               if not func_response_parts:
@@ -7808,7 +7813,8 @@ class AsyncModels(_api_module.BaseModule):
             break
           func_response_parts = (
               await _extra_utils.get_function_response_parts_async(
-                  chunk, function_map
+                  chunk, function_map,
+                  parsed_config.action_guard if parsed_config else None,
               )
           )
         if not function_map:

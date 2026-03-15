@@ -99,6 +99,32 @@ response = client.models.generate_content(
 )
 ```
 
+## Action Guard
+
+You can provide a centralized `action_guard` function that receives a `ToolCall` and should return a `GuardDecision` of `ALLOW` or `BLOCK` to permit or prevent execution.
+
+Example:
+
+```python
+from agent_action_guard import is_action_harmful
+from google.genai import types
+
+def my_guard(action: types.ToolCall) -> types.GuardDecision:
+    is_harmful, confidence = is_action_harmful(action)
+    if is_harmful:
+        return types.GuardDecision.BLOCK
+    return types.GuardDecision.ALLOW
+
+response = client.models.generate_content(
+    model='gemini-2.5-flash',
+    contents='What is the weather like in Boston?',
+    config=types.GenerateContentConfig(
+        tools=[get_current_weather],
+        action_guard=my_guard,
+    ),
+)
+```
+
 **(Optional) Using environment variables:**
 
 You can create a client by configuring the necessary environment variables.

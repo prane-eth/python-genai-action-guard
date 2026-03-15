@@ -425,6 +425,27 @@ else:
     print(response.text)
 ```
 
+### Action Guard
+
+When providing `tools` to models or interactions, you can supply an
+`action_guard` callable inside `types.GenerateContentConfig` (or the
+corresponding config type). The guard receives a `ToolCall` and should
+return a `GuardDecision` (`ALLOW` or `BLOCK`) to permit or prevent execution.
+
+Example:
+
+```python
+from google import genai
+from google.genai import types
+
+def my_guard(call: types.ToolCall) -> types.GuardDecision:
+    if call.name == 'sensitive_tool':
+        return types.GuardDecision.BLOCK
+    return types.GuardDecision.ALLOW
+
+config = types.GenerateContentConfig(tools=[get_current_weather], action_guard=my_guard)
+```
+
 ### Grounding (Google Search)
 
 Connect the model to real-time web data.
